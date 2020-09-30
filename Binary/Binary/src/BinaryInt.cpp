@@ -188,6 +188,44 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 
 void BinaryInt::operator/=(const BinaryInt& other) { *this = *this / other; }
 
+BinaryInt BinaryInt::operator%(const BinaryInt& other) const
+{
+	BinaryInt divisor = other;
+	BinaryInt dividend = *this;
+
+	if (divisor > dividend && !(divisor == BinaryInt("0") || dividend == BinaryInt("0"))) // Divisor is bigger, or one is equal to zero
+		return dividend;
+
+	// Find most significant bit
+	int dividendMS = -1, divisorMS = -1;
+
+	for (int i = this->SizeOf() - 1; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--)
+	{
+		if (dividend.GetBit(i) && dividendMS == -1)
+			dividendMS = i;
+		if (divisor.GetBit(i) && divisorMS == -1)
+			divisorMS = i;
+	}
+
+	int i = 0;
+	divisor = divisor << (dividendMS - divisorMS);
+
+	while (dividend >= other) // More than original divisor
+	{
+		if (dividend >= divisor) // If it's more than the divisor
+		{
+			dividend -= divisor; // Subtract shifted divisor from dividend
+		}
+
+		divisor = divisor >> 1; // Divide divisor by 2
+		i++;
+	}
+
+	return dividend;
+}
+
+void BinaryInt::operator%=(const BinaryInt& other) { *this = *this % other; }
+
 
 // Shift operators
 

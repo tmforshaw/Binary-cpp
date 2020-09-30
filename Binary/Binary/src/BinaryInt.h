@@ -38,6 +38,8 @@ public:
 	void operator*=(const BinaryInt& other);
 	BinaryInt operator/(const BinaryInt& other) const;
 	void operator/=(const BinaryInt& other);
+	BinaryInt operator%(const BinaryInt& other) const;
+	void operator%=(const BinaryInt& other);
 
 	// Shift operators
 	BinaryInt operator>>(int amt) const;
