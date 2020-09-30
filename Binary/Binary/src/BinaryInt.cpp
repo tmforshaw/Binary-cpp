@@ -58,24 +58,33 @@ bool BinaryInt::operator==(const BinaryInt& other) const
 	return true;
 }
 
+bool BinaryInt::operator!=(const BinaryInt& other) const
+{
+	for (int i = 0; i < this->SizeOf(); i++)
+		if (this->GetBit(i) != other.GetBit(i))
+			return true;
+
+	return false;
+}
+
 bool BinaryInt::operator>(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(0) == 0;
+	return (*this - other).GetBit(this->SizeOf() - 1) == 0;
 }
 
 bool BinaryInt::operator>=(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(0) == 0 || *this == other;
+	return (*this - other).GetBit(this->SizeOf() - 1) == 0 || *this == other;
 }
 
 bool BinaryInt::operator<(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(0) == 1;
+	return (*this - other).GetBit(this->SizeOf() - 1) == 1;
 }
 
 bool BinaryInt::operator<=(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(0) == 1 || *this == other;
+	return (*this - other).GetBit(this->SizeOf() - 1) == 1 || *this == other;
 }
 
 
@@ -117,28 +126,64 @@ BinaryInt BinaryInt::operator-(const BinaryInt& other) const
 	return output + *this;
 }
 
-void BinaryInt::operator-=(const BinaryInt& other) { *this = *this + other; }
+void BinaryInt::operator-=(const BinaryInt& other) { *this = *this - other; }
 
 BinaryInt BinaryInt::operator*(const BinaryInt& other) const
 {
-	BinaryInt output("0"); // Initialise to zero
+	BinaryInt total("0"); // Initialise to zero
 
 	for (int i = 0; i < this->SizeOf(); i++) // Loop through (Starting with least significant bit)
 	{
 		if (this->GetBit(i))
-			output += ((BinaryInt)other >> i);
+			total += ((BinaryInt)other << i);
 	}
 
-	return output;
+	return total;
 }
 
 void BinaryInt::operator*=(const BinaryInt& other) { *this = *this * other; }
 
 BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 {
-	BinaryInt output("0"); // Initialise to zero
+	BinaryInt quotient("0"); // Initialise to zero
 
-	return output;
+	BinaryInt divisor = other;
+	BinaryInt dividend = *this;
+
+	if (divisor > dividend && !(divisor == quotient || dividend == quotient)) // Divisor is bigger, or one is equal to zero
+		return quotient;
+
+	// Find most significant bit
+	int dividendMS = -1, divisorMS = -1;
+
+	for (int i = this->SizeOf() - 1; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--)
+	{
+		if (dividend.GetBit(i) && dividendMS == -1)
+			dividendMS = i;
+		if (divisor.GetBit(i) && divisorMS == -1)
+			divisorMS = i;
+	}
+
+	int i = 0;
+	divisor = divisor << (dividendMS - divisorMS);
+
+	while (dividend >= other) // More than original divisor
+	{
+		if (dividend >= divisor) // If it's more than the divisor
+		{
+			dividend -= divisor; // Subtract shifted divisor from dividend
+			quotient.SetBit(0, 1); // Set quotient bit to 1
+		} else
+		{
+			quotient.SetBit(0, 0); // Set quotient bit to 0
+		}
+
+		quotient = quotient << 1; // Multiply quotient by 2
+		divisor = divisor >> 1; // Divide divisor by 2
+		i++;
+	}
+
+	return quotient;
 }
 
 void BinaryInt::operator/=(const BinaryInt& other) { *this = *this / other; }
@@ -153,11 +198,11 @@ BinaryInt BinaryInt::operator>>(int amt) const
 
 	for (int i = 0; i < amt; i++)
 	{
-		for (int j = output.SizeOf() - 1; j > 0; j--)
+		for (int j = 0; j < output.SizeOf() - 1; j++)
 		{
-			output.SetBit(j, output.GetBit(j - 1));
+			output.SetBit(j, output.GetBit(j + 1));
 		}
-		output.SetBit(0, 0);
+		output.SetBit(output.SizeOf() - 1, 0);
 	}
 
 	return output;
@@ -169,11 +214,11 @@ BinaryInt BinaryInt::operator<<(int amt) const
 
 	for (int i = 0; i < amt; i++)
 	{
-		for (int j = 0; j < output.SizeOf() - 1; j++)
+		for (int j = output.SizeOf() - 1; j > 0; j--)
 		{
-			output.SetBit(j, output.GetBit(j + 1));
+			output.SetBit(j, output.GetBit(j - 1));
 		}
-		output.SetBit(output.SizeOf() - 1, 0);
+		output.SetBit(0, 0);
 	}
 
 	return output;

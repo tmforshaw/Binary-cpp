@@ -22,6 +22,7 @@ public:
 
 	BinaryInt operator!() const;
 	bool operator==(const BinaryInt& other) const;
+	bool operator!=(const BinaryInt& other) const;
 	bool operator>(const BinaryInt& other) const;
 	bool operator>=(const BinaryInt& other) const;
 	bool operator<(const BinaryInt& other) const;
