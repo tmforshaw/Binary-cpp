@@ -21,11 +21,24 @@ public:
 	// Boolean operators
 
 	BinaryInt operator!() const;
+	bool operator==(const BinaryInt& other) const;
+	bool operator>(const BinaryInt& other) const;
+	bool operator>=(const BinaryInt& other) const;
+	bool operator<(const BinaryInt& other) const;
+	bool operator<=(const BinaryInt& other) const;
 
 	// Maths operators
 
 	BinaryInt operator+(const BinaryInt& other) const;
+	void operator+=(const BinaryInt& other);
 	BinaryInt operator-(const BinaryInt& other) const;
+	void operator-=(const BinaryInt& other);
 	BinaryInt operator*(const BinaryInt& other) const;
+	void operator*=(const BinaryInt& other);
 	BinaryInt operator/(const BinaryInt& other) const;
+	void operator/=(const BinaryInt& other);
+
+	// Shift operators
+	BinaryInt operator>>(int amt) const;
+	BinaryInt operator<<(int amt) const;
 };

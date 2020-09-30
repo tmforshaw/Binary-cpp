@@ -49,6 +49,35 @@ BinaryInt BinaryInt::operator!() const
 	return output;
 }
 
+bool BinaryInt::operator==(const BinaryInt& other) const
+{
+	for (int i = 0; i < this->SizeOf(); i++)
+		if (this->GetBit(i) != other.GetBit(i))
+			return false;
+
+	return true;
+}
+
+bool BinaryInt::operator>(const BinaryInt& other) const
+{
+	return (*this - other).GetBit(0) == 0;
+}
+
+bool BinaryInt::operator>=(const BinaryInt& other) const
+{
+	return (*this - other).GetBit(0) == 0 || *this == other;
+}
+
+bool BinaryInt::operator<(const BinaryInt& other) const
+{
+	return (*this - other).GetBit(0) == 1;
+}
+
+bool BinaryInt::operator<=(const BinaryInt& other) const
+{
+	return (*this - other).GetBit(0) == 1 || *this == other;
+}
+
 
 // Maths operators
 
@@ -68,16 +97,18 @@ BinaryInt BinaryInt::operator+(const BinaryInt& other) const
 		} else if (other.GetBit(i)) // Bit i of other is 1
 		{
 			output.SetBit(i, !carryBit);
-			// Carry remains unchanged
+			// Carry is unchanged
 		} else
 		{
 			output.SetBit(i, carryBit);
 			carryBit = 0;
 		}
 	}
-	int a = 0;
+
 	return output;
 }
+
+void BinaryInt::operator+=(const BinaryInt& other) { *this = *this + other; }
 
 BinaryInt BinaryInt::operator-(const BinaryInt& other) const
 {
@@ -86,16 +117,64 @@ BinaryInt BinaryInt::operator-(const BinaryInt& other) const
 	return output + *this;
 }
 
+void BinaryInt::operator-=(const BinaryInt& other) { *this = *this + other; }
+
 BinaryInt BinaryInt::operator*(const BinaryInt& other) const
+{
+	BinaryInt output("0"); // Initialise to zero
+
+	for (int i = 0; i < this->SizeOf(); i++) // Loop through (Starting with least significant bit)
+	{
+		if (this->GetBit(i))
+			output += ((BinaryInt)other >> i);
+	}
+
+	return output;
+}
+
+void BinaryInt::operator*=(const BinaryInt& other) { *this = *this * other; }
+
+BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 {
 	BinaryInt output("0"); // Initialise to zero
 
 	return output;
 }
 
-BinaryInt BinaryInt::operator/(const BinaryInt& other) const
+void BinaryInt::operator/=(const BinaryInt& other) { *this = *this / other; }
+
+
+// Shift operators
+
+
+BinaryInt BinaryInt::operator>>(int amt) const
 {
-	BinaryInt output("0"); // Initialise to zero
+	BinaryInt output = *this;
+
+	for (int i = 0; i < amt; i++)
+	{
+		for (int j = output.SizeOf() - 1; j > 0; j--)
+		{
+			output.SetBit(j, output.GetBit(j - 1));
+		}
+		output.SetBit(0, 0);
+	}
+
+	return output;
+}
+
+BinaryInt BinaryInt::operator<<(int amt) const
+{
+	BinaryInt output = *this;
+
+	for (int i = 0; i < amt; i++)
+	{
+		for (int j = 0; j < output.SizeOf() - 1; j++)
+		{
+			output.SetBit(j, output.GetBit(j + 1));
+		}
+		output.SetBit(output.SizeOf() - 1, 0);
+	}
 
 	return output;
 }
