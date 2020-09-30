@@ -1,8 +1,11 @@
 #include <iostream>
+#include "Binary.h"
+
+Binary bin("1000 1101");
 
 int main()
 {
-	std::cout << "Hello World!" << std::endl;
+	std::cout << bin << std::endl;
 
 	std::cin.get();
 }
