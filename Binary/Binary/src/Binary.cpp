@@ -5,8 +5,8 @@
 Binary::Binary()
 {
 	// Return a Binary of 0
-	for (int i = 0; i < defaultByteNum * 8; i++)
-		m_bits[i] = 0;
+	for (int i = 0; i < this->SizeOf(); i++)
+		Binary::m_bits[i] = 0;
 }
 
 Binary::Binary(std::string strBits)
@@ -21,34 +21,47 @@ Binary::Binary(std::string strBits)
 		// Set the n-th element of m_bits to the value of 1 or 0
 
 		if (strBits[i] - '0') // Everything above zero
-			m_bits[(int)strBits.length() - 1 - i] = 1;
+			Binary::m_bits[(int)strBits.length() - 1 - i] = 1;
 		else // Zero
-			m_bits[(int)strBits.length() - 1 - i] = 0;
+			Binary::m_bits[(int)strBits.length() - 1 - i] = 0;
 	}
 }
 
-bool* Binary::GetBits() { return m_bits; }
+bool* Binary::GetBits() { return Binary::m_bits; }
 
-bool Binary::GetBit(unsigned int i) { return m_bits[i]; }
+bool Binary::GetBit(unsigned int i) const { return Binary::m_bits[i]; }
 
-void Binary::SetBit(unsigned int i, bool val) { m_bits[i] = val; }
+void Binary::SetBit(unsigned int i, bool val) { Binary::m_bits[i] = val; }
+
+const int Binary::SizeOf() const { return defaultByteNum * 8; }
+
+Binary Binary::operator!() const
+{
+	Binary output("0");
+
+	for (int i = 0; i < this->SizeOf(); i++)
+	{
+		output.SetBit(i, !this->GetBit(i));
+	}
+
+	return output;
+}
 
 
 // Method for outputting Binary using iostream
-
-std::ostream& operator<<(std::ostream& stream, Binary& bin)
+std::ostream& operator<<(std::ostream& stream, const Binary& bin)
 {
-	for (int i = defaultByteNum * 8 - 1; i >= 0; i--) // Loop through backwards (Start with most significant bit)
+	for (int i = bin.SizeOf() - 1; i >= 0; i--) // Loop through backwards (Start with most significant bit)
 	{
 		stream << bin.GetBit(i);
 
-		if (spaceNibbles && i % 4 == 0) stream << ' ';
+		if (padNibbles && i % 4 == 0) stream << ' ';
 
 		if (padBytes && i % 8 == 0)
 		{
 			stream << ' ';
 
-			// if (spaceNibbles) stream << ' '; // Extra Padding between bytes
+			// if (padNibbles) stream << ' '; // Extra Padding between bytes
 		}
 	}
 

@@ -143,10 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BinaryInt.cpp" />
     <ClCompile Include="src\Binary.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BinaryInt.h" />
     <ClInclude Include="src\Binary.h" />
     <ClInclude Include="src\Constants.h" />
   </ItemGroup>

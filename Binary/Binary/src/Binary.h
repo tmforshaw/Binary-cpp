@@ -9,15 +9,20 @@ private:
 
 public:
 	Binary();
-
 	Binary(std::string strBits);
 
-	bool* GetBits();
-	bool GetBit(unsigned int i);
-	void SetBit(unsigned int i, bool val);
+	virtual bool* GetBits();
+	virtual bool GetBit(unsigned int i) const;
+	virtual void SetBit(unsigned int i, bool val);
+
+	virtual const int SizeOf() const;
+
+	// Operators
+
+	Binary operator!() const;
+
+	friend std::ostream& operator<<(std::ostream& stream, const Binary& bin);
 };
 
-
 // Method for outputting Binary using iostream
-
-std::ostream& operator<<(std::ostream& stream, Binary& bin);
+std::ostream& operator<<(std::ostream& stream, const Binary& bin);
