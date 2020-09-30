@@ -1,2 +1,2 @@
 # Binary-cpp
-A C++ VS Project where I try to implement binary as a class, and implement maths and other functions.
+A C++ VS Project where I try to implement binary as a class, implement binary maths and other binary functions.
