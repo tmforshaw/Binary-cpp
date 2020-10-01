@@ -57,10 +57,15 @@ void BinaryInt::SetBit(unsigned int i, bool val) { BinaryInt::m_bits[i] = val; }
 const int BinaryInt::SizeOf() const { return intByteNum * 8; }
 
 
-// Assignment Operator
+// Assignment Operators
 
 
-void BinaryInt::operator=(unsigned int decVal) const
+void BinaryInt::operator=(std::string strBits)
+{
+	BinaryInt::BinaryInt(strBits);
+}
+
+void BinaryInt::operator=(int decVal) const
 {
 	BinaryInt::BinaryInt(decVal);
 }

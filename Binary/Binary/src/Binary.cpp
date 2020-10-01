@@ -59,6 +59,11 @@ void Binary::operator=(const Binary& other)
 		this->SetBit(i, other.GetBit(i));
 }
 
+void Binary::operator=(std::string strBits)
+{
+	Binary::Binary(strBits);
+}
+
 void Binary::operator=(unsigned int decVal) const
 {
 	Binary::Binary(decVal);

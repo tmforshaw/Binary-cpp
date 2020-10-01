@@ -20,7 +20,8 @@ public:
 
 	// Assignment operators
 	void operator=(const Binary& other);
-	void operator=(unsigned int decVal) const;
+	virtual void operator=(std::string strBits);
+	virtual void operator=(unsigned int decVal) const;
 
 	// Boolean operator
 	Binary operator!() const;

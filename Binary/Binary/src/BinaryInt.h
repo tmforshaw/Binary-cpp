@@ -20,7 +20,9 @@ public:
 
 	const int SizeOf() const;
 
-	void operator=(unsigned int decVal) const;
+	// Assignment operators
+	void operator=(std::string strBits);
+	void operator=(int decVal) const;
 
 	// Boolean operators
 	BinaryInt operator!() const;
