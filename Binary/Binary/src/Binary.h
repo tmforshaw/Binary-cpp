@@ -18,8 +18,11 @@ public:
 
 	virtual const int SizeOf() const;
 
-	// Boolean operators
+	// Assignment operators
+	void operator=(const Binary& other);
+	void operator=(unsigned int decVal) const;
 
+	// Boolean operator
 	Binary operator!() const;
 
 	// Stream Function

@@ -57,6 +57,15 @@ void BinaryInt::SetBit(unsigned int i, bool val) { BinaryInt::m_bits[i] = val; }
 const int BinaryInt::SizeOf() const { return intByteNum * 8; }
 
 
+// Assignment Operator
+
+
+void BinaryInt::operator=(unsigned int decVal) const
+{
+	BinaryInt::BinaryInt(decVal);
+}
+
+
 // Boolean Operators
 
 
@@ -429,7 +438,7 @@ std::string BinaryInt::ToBase(const BinaryInt& divisor) const
 	{
 		int digitTotal = 0;
 		for (int j = 0; j < this->SizeOf(); j++)
-			digitTotal += digits[i].GetBit(j) * pow(2, j);
+			digitTotal += digits[i].GetBit(j) * (int)pow(2, j);
 
 		charDigits.push_back(
 			((char)digitTotal > 9) ?
@@ -438,7 +447,7 @@ std::string BinaryInt::ToBase(const BinaryInt& divisor) const
 		);
 	}
 
-	for (int i = 0; i < charDigits.size(); i++)
+	for (int i = 0; i < (int)charDigits.size(); i++)
 		finalDigits += charDigits[i];
 
 	return finalDigits;

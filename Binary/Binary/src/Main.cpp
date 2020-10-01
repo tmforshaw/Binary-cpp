@@ -2,8 +2,9 @@
 #include "Binary.h"
 #include "BinaryInt.h"
 
-BinaryInt bin1(117);
-BinaryInt bin2(10);
+BinaryInt bin1 = 10;
+BinaryInt bin2 = -120;
+BinaryInt bin3 = bin2;
 
 int main()
 {
@@ -11,6 +12,7 @@ int main()
 
 	std::cout << bin1 << " : " << bin1.ToDec() << std::endl;
 	std::cout << bin2 << " : " << bin2.ToDec() << std::endl;
+	std::cout << bin3 << " : " << bin3.ToDec() << std::endl;
 
 	std::cin.get();
 }

@@ -20,6 +20,8 @@ public:
 
 	const int SizeOf() const;
 
+	void operator=(unsigned int decVal) const;
+
 	// Boolean operators
 	BinaryInt operator!() const;
 	bool operator==(const BinaryInt& other) const;

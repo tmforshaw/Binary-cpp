@@ -49,6 +49,23 @@ void Binary::SetBit(unsigned int i, bool val) { Binary::m_bits[i] = val; }
 
 const int Binary::SizeOf() const { return defaultByteNum * 8; }
 
+
+// Assignment operators
+
+
+void Binary::operator=(const Binary& other)
+{
+	for (int i = 0; i < this->SizeOf(); i++)
+		this->SetBit(i, other.GetBit(i));
+}
+
+void Binary::operator=(unsigned int decVal) const
+{
+	Binary::Binary(decVal);
+}
+
+
+// Boolean operator
 Binary Binary::operator!() const
 {
 	Binary output("0");
