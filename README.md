@@ -5,7 +5,7 @@ A C++ Visual Studio Project where I try to implement binary as a class, implemen
 
 # What there currently is
 * The Binary Class - This allows for the output of binary numbers via std::ostream, and contains getters and setters for the bits as well as the ability to flip all bits.
-* The BinaryInt Class - This has mathematical functions (+ - * / %), and boolean operators (== != > >= < <= ++ --). You can convert between bases, Dec and Hex have prebuilt functions, but other for other bases just use ConvertToBase(*BaseAsBinaryInt*).
+* The BinaryInt Class - This has mathematical functions (+ - * / %), and boolean operators (== != > >= < <= ++ --). You can convert between bases, Dec and Hex have prebuilt functions, but other for other bases just use ToBase(*BaseAsBinaryInt*).
 
 # What I plan to include 
   * Introduce Floating Point Numbers
