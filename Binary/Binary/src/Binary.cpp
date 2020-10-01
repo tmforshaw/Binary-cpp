@@ -68,9 +68,9 @@ std::ostream& operator<<(std::ostream& stream, const Binary& bin)
 	{
 		stream << bin.GetBit(i);
 
-		if (padNibbles && i % 4 == 0) stream << ' ';
+		if (padNibbles && i % 4 == 0 && i != 0) stream << ' ';
 
-		if (padBytes && i % 8 == 0)
+		if (padBytes && i % 8 == 0 && i != 0)
 		{
 			stream << ' ';
 
