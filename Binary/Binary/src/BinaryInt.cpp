@@ -25,6 +25,25 @@ BinaryInt::BinaryInt(std::string strBits)
 	}
 }
 
+BinaryInt::BinaryInt(int decVal)
+{
+	// Find and remove sign
+	bool negative = decVal < 0;
+	if (negative) decVal *= -1;
+	SetBit(this->SizeOf() - 1, negative);
+
+	int decimalValue = decVal;
+
+	for (int i = this->SizeOf() - 2; i >= 0; i--) // Loop backwards (Skip sign bit)
+	{
+		if (decimalValue >= (int)pow(2, i))
+		{
+			decimalValue -= (int)pow(2, i);
+			SetBit(i, 1);
+		} else SetBit(i, 0);
+	}
+}
+
 bool* BinaryInt::GetBits() { return BinaryInt::m_bits; }
 
 bool BinaryInt::GetBit(unsigned int i) const { return BinaryInt::m_bits[i]; }
@@ -69,22 +88,38 @@ bool BinaryInt::operator!=(const BinaryInt& other) const
 
 bool BinaryInt::operator>(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(this->SizeOf() - 1) == 0;
+	for (int i = this->SizeOf() - 1; i >= 0; i--)
+		if (this->GetBit(i) != other.GetBit(i))
+			return this->GetBit(i);
+
+	return false;
 }
 
 bool BinaryInt::operator>=(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(this->SizeOf() - 1) == 0 || *this == other;
+	for (int i = this->SizeOf() - 1; i >= 0; i--)
+		if (this->GetBit(i) != other.GetBit(i))
+			return this->GetBit(i);
+
+	return true;
 }
 
 bool BinaryInt::operator<(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(this->SizeOf() - 1) == 1;
+	for (int i = this->SizeOf() - 1; i >= 0; i--)
+		if (this->GetBit(i) != other.GetBit(i))
+			return !this->GetBit(i);
+
+	return false;
 }
 
 bool BinaryInt::operator<=(const BinaryInt& other) const
 {
-	return (*this - other).GetBit(this->SizeOf() - 1) == 1 || *this == other;
+	for (int i = this->SizeOf() - 1; i >= 0; i--)
+		if (this->GetBit(i) != other.GetBit(i))
+			return !this->GetBit(i);
+
+	return true;
 }
 
 
@@ -132,11 +167,30 @@ BinaryInt BinaryInt::operator*(const BinaryInt& other) const
 {
 	BinaryInt total("0"); // Initialise to zero
 
-	for (int i = 0; i < this->SizeOf(); i++) // Loop through (Starting with least significant bit)
+	BinaryInt unsignedThis = *this;
+	BinaryInt unsignedOther = other;
+
+	bool negativeThis = unsignedThis.GetBit(unsignedThis.SizeOf() - 1);
+	if (negativeThis) // Remove Two's complement
 	{
-		if (this->GetBit(i))
-			total += ((BinaryInt)other << i);
+		unsignedThis -= BinaryInt("1");
+		unsignedThis = !unsignedThis;
 	}
+
+	bool negativeOther = unsignedOther.GetBit(unsignedOther.SizeOf() - 1);
+	if (negativeOther) // Remove Two's complement
+	{
+		unsignedOther -= BinaryInt("1");
+		unsignedOther = !unsignedOther;
+	}
+
+	for (int i = 0; i < this->SizeOf() - 1; i++) // Loop through (Starting with least significant bit) (Skip sign bit)
+	{
+		if (unsignedThis.GetBit(i))
+			total += (unsignedOther << i);
+	}
+
+	total.SetBit(this->SizeOf() - 1, (negativeThis && !negativeOther) || (negativeOther && !negativeThis)); // Set sign bit
 
 	return total;
 }
@@ -150,13 +204,28 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 	BinaryInt divisor = other;
 	BinaryInt dividend = *this;
 
+	// // Remove Signs
+	// bool negativeDividend = dividend.GetBit(dividend.SizeOf() - 1);
+	// if (negativeDividend) // Remove Two's complement
+	// {
+	// 	dividend -= BinaryInt("1");
+	// 	dividend = !dividend;
+	// }
+	// 
+	// bool negativeDivisor = divisor.GetBit(divisor.SizeOf() - 1);
+	// if (negativeDivisor) // Remove Two's complement
+	// {
+	// 	divisor -= BinaryInt("1");
+	// 	divisor = !divisor;
+	// }
+
 	if (divisor > dividend && !(divisor == quotient || dividend == quotient)) // Divisor is bigger, or one is equal to zero
 		return quotient;
 
 	// Find most significant bit
 	int dividendMS = -1, divisorMS = -1;
 
-	for (int i = this->SizeOf() - 1; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--)
+	for (int i = this->SizeOf() - 1; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--) // Loop backwards (Skip sign bit)
 	{
 		if (dividend.GetBit(i) && dividendMS == -1)
 			dividendMS = i;
@@ -164,27 +233,27 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 			divisorMS = i;
 	}
 
-	int i = 0;
 	divisor = divisor << (dividendMS - divisorMS);
+	int i = 0;
 
 	while (dividend >= other) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
 	{
 		if (dividend >= divisor) // If it's more than the divisor
 		{
 			dividend -= divisor; // Subtract shifted divisor from dividend
-			quotient.SetBit(0, 1); // Set quotient bit to 1
-		} else
-		{
-			quotient.SetBit(0, 0); // Set quotient bit to 0
+			quotient.SetBit(dividendMS - divisorMS - i, 1); // Set quotient bit to 1
 		}
 
 		if (dividend < other) // If it's less than original divisor
 			break;
 
-		quotient = quotient << 1; // Multiply quotient by 2
 		divisor = divisor >> 1; // Divide divisor by 2
 		i++;
 	}
+
+	// quotient.SetBit(this->SizeOf() - 1, (negativeDividend && !negativeDivisor) || (negativeDivisor && !negativeDividend)); // Set sign bit
+
+	quotient << 1;
 
 	return quotient;
 }
@@ -195,6 +264,21 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 {
 	BinaryInt divisor = other;
 	BinaryInt dividend = *this;
+
+	// Remove Signs
+	bool negativeDividend = dividend.GetBit(dividend.SizeOf() - 1);
+	if (negativeDividend) // Remove Two's complement
+	{
+		dividend -= BinaryInt("1");
+		dividend = !dividend;
+	}
+
+	bool negativeDivisor = divisor.GetBit(divisor.SizeOf() - 1);
+	if (negativeDivisor) // Remove Two's complement
+	{
+		divisor -= BinaryInt("1");
+		divisor = !divisor;
+	}
 
 	if (divisor > dividend && !(divisor == BinaryInt("0") || dividend == BinaryInt("0"))) // Divisor is bigger, or one is equal to zero
 		return dividend;
@@ -226,6 +310,9 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 		divisor = divisor >> 1; // Divide divisor by 2
 		i++;
 	}
+
+	// UNSURE HOW NEGATIVE MODULO WORKS
+	dividend.SetBit(this->SizeOf() - 1, (negativeDividend && !negativeDivisor) || (negativeDivisor && !negativeDividend)); // Set sign bit
 
 	return dividend;
 }
@@ -267,3 +354,52 @@ BinaryInt BinaryInt::operator<<(int amt) const
 
 	return output;
 }
+
+
+// Conversion Functions
+
+
+std::string BinaryInt::ToBase(const BinaryInt& divisor) const
+{
+	BinaryInt dividend = *this;
+	std::vector<BinaryInt> digits;
+	std::vector<char> charDigits;
+	std::string finalDigits;
+
+	// Get sign of the number
+	bool negative = this->GetBit(this->SizeOf() - 1);
+	if (negative) // Remove Two's complement
+	{
+		dividend -= BinaryInt("1");
+		dividend = !dividend;
+		finalDigits += '-'; // Add a sign to the final answer
+	}
+
+	while (dividend >= divisor)
+	{
+		digits.push_back(dividend % divisor);
+		dividend /= divisor;
+	}
+
+	digits.push_back(dividend);
+
+	// THIS IS NOT HOW COMPUTERS WOULD DO THIS STEP
+
+	for (int i = digits.size() - 1; i >= 0; i--)
+	{
+		int digitTotal = 0;
+		for (int j = 0; j < this->SizeOf(); j++)
+			digitTotal += digits[i].GetBit(j) * pow(2, j);
+
+		charDigits.push_back((char)digitTotal + '0');
+	}
+
+	for (int i = 0; i < charDigits.size(); i++)
+		finalDigits += charDigits[i];
+
+	return finalDigits;
+}
+
+std::string BinaryInt::ToDec() const { return BinaryInt::ToBase(BinaryInt("1010")); }
+
+std::string BinaryInt::ToHex() const { return BinaryInt::ToBase(BinaryInt("1 0000")); }

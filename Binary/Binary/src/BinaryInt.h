@@ -1,7 +1,8 @@
 #pragma once
 #include "Constants.h"
 #include "Binary.h"
-#include <iostream>
+#include <ostream>
+#include <vector>
 
 class BinaryInt : public Binary
 {
@@ -11,6 +12,7 @@ private:
 public:
 	BinaryInt();
 	BinaryInt(std::string strBits);
+	BinaryInt(int decVal);
 
 	bool* GetBits();
 	bool GetBit(unsigned int i) const;
@@ -19,7 +21,6 @@ public:
 	const int SizeOf() const;
 
 	// Boolean operators
-
 	BinaryInt operator!() const;
 	bool operator==(const BinaryInt& other) const;
 	bool operator!=(const BinaryInt& other) const;
@@ -29,7 +30,6 @@ public:
 	bool operator<=(const BinaryInt& other) const;
 
 	// Maths operators
-
 	BinaryInt operator+(const BinaryInt& other) const;
 	void operator+=(const BinaryInt& other);
 	BinaryInt operator-(const BinaryInt& other) const;
@@ -44,4 +44,9 @@ public:
 	// Shift operators
 	BinaryInt operator>>(int amt) const;
 	BinaryInt operator<<(int amt) const;
+
+	// Conversion Functions
+	std::string ToBase(const BinaryInt& base) const;
+	std::string ToDec() const;
+	std::string ToHex() const;
 };

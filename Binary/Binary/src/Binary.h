@@ -10,6 +10,7 @@ private:
 public:
 	Binary();
 	Binary(std::string strBits);
+	Binary(unsigned int decVal);
 
 	virtual bool* GetBits();
 	virtual bool GetBit(unsigned int i) const;
@@ -17,10 +18,11 @@ public:
 
 	virtual const int SizeOf() const;
 
-	// Operators
+	// Boolean operators
 
 	Binary operator!() const;
 
+	// Stream Function
 	friend std::ostream& operator<<(std::ostream& stream, const Binary& bin);
 };
 

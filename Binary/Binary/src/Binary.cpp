@@ -27,6 +27,20 @@ Binary::Binary(std::string strBits)
 	}
 }
 
+Binary::Binary(unsigned int decVal)
+{
+	int decimalValue = decVal;
+
+	for (int i = this->SizeOf() - 1; i >= 0; i--) // Loop backwards
+	{
+		if (decimalValue >= (int)pow(2, i))
+		{
+			decimalValue -= (int)pow(2, i);
+			SetBit(i, 1);
+		} else SetBit(i, 0);
+	}
+}
+
 bool* Binary::GetBits() { return Binary::m_bits; }
 
 bool Binary::GetBit(unsigned int i) const { return Binary::m_bits[i]; }
@@ -46,7 +60,6 @@ Binary Binary::operator!() const
 
 	return output;
 }
-
 
 // Method for outputting Binary using iostream
 std::ostream& operator<<(std::ostream& stream, const Binary& bin)
