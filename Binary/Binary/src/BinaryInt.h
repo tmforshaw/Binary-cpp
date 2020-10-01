@@ -40,6 +40,12 @@ public:
 	void operator/=(const BinaryInt& other);
 	BinaryInt operator%(const BinaryInt& other) const;
 	void operator%=(const BinaryInt& other);
+	void operator++();
+	void operator++(int);
+	void operator--();
+	void operator--(int);
+
+	BinaryInt Abs() const;
 
 	// Shift operators
 	BinaryInt operator>>(int amt) const;

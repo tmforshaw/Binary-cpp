@@ -29,10 +29,8 @@ BinaryInt::BinaryInt(int decVal)
 {
 	// Find and remove sign
 	bool negative = decVal < 0;
-	if (negative) decVal *= -1;
-	SetBit(this->SizeOf() - 1, negative);
-
 	int decimalValue = decVal;
+	if (negative) decimalValue *= -1;
 
 	for (int i = this->SizeOf() - 2; i >= 0; i--) // Loop backwards (Skip sign bit)
 	{
@@ -41,6 +39,12 @@ BinaryInt::BinaryInt(int decVal)
 			decimalValue -= (int)pow(2, i);
 			SetBit(i, 1);
 		} else SetBit(i, 0);
+	}
+
+	if (negative) // Two's complement
+	{
+		(*this)--;
+		*this = !(*this);
 	}
 }
 
@@ -173,14 +177,14 @@ BinaryInt BinaryInt::operator*(const BinaryInt& other) const
 	bool negativeThis = unsignedThis.GetBit(unsignedThis.SizeOf() - 1);
 	if (negativeThis) // Remove Two's complement
 	{
-		unsignedThis -= BinaryInt("1");
+		unsignedThis--;
 		unsignedThis = !unsignedThis;
 	}
 
 	bool negativeOther = unsignedOther.GetBit(unsignedOther.SizeOf() - 1);
 	if (negativeOther) // Remove Two's complement
 	{
-		unsignedOther -= BinaryInt("1");
+		unsignedOther--;
 		unsignedOther = !unsignedOther;
 	}
 
@@ -204,20 +208,20 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 	BinaryInt divisor = other;
 	BinaryInt dividend = *this;
 
-	// // Remove Signs
-	// bool negativeDividend = dividend.GetBit(dividend.SizeOf() - 1);
-	// if (negativeDividend) // Remove Two's complement
-	// {
-	// 	dividend -= BinaryInt("1");
-	// 	dividend = !dividend;
-	// }
-	// 
-	// bool negativeDivisor = divisor.GetBit(divisor.SizeOf() - 1);
-	// if (negativeDivisor) // Remove Two's complement
-	// {
-	// 	divisor -= BinaryInt("1");
-	// 	divisor = !divisor;
-	// }
+	// Remove Signs
+	bool negativeDividend = dividend.GetBit(dividend.SizeOf() - 1);
+	if (negativeDividend) // Remove Two's complement
+	{
+		dividend--;
+		dividend = !dividend;
+	}
+
+	bool negativeDivisor = divisor.GetBit(divisor.SizeOf() - 1);
+	if (negativeDivisor) // Remove Two's complement
+	{
+		divisor--;
+		divisor = !divisor;
+	}
 
 	if (divisor > dividend && !(divisor == quotient || dividend == quotient)) // Divisor is bigger, or one is equal to zero
 		return quotient;
@@ -234,9 +238,8 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 	}
 
 	divisor = divisor << (dividendMS - divisorMS);
-	int i = 0;
 
-	while (dividend >= other) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
+	for (int i = 0; dividend >= other.Abs(); i++) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
 	{
 		if (dividend >= divisor) // If it's more than the divisor
 		{
@@ -244,16 +247,18 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 			quotient.SetBit(dividendMS - divisorMS - i, 1); // Set quotient bit to 1
 		}
 
-		if (dividend < other) // If it's less than original divisor
+		if (dividend < other.Abs()) // If it's less than original divisor
 			break;
 
 		divisor = divisor >> 1; // Divide divisor by 2
-		i++;
 	}
 
-	// quotient.SetBit(this->SizeOf() - 1, (negativeDividend && !negativeDivisor) || (negativeDivisor && !negativeDividend)); // Set sign bit
-
-	quotient << 1;
+	// Give sign back to quotient
+	if ((negativeDividend && !negativeDivisor) || (negativeDivisor && !negativeDividend))
+	{
+		quotient--;
+		quotient = !quotient;
+	}
 
 	return quotient;
 }
@@ -269,14 +274,14 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 	bool negativeDividend = dividend.GetBit(dividend.SizeOf() - 1);
 	if (negativeDividend) // Remove Two's complement
 	{
-		dividend -= BinaryInt("1");
+		dividend--;
 		dividend = !dividend;
 	}
 
 	bool negativeDivisor = divisor.GetBit(divisor.SizeOf() - 1);
 	if (negativeDivisor) // Remove Two's complement
 	{
-		divisor -= BinaryInt("1");
+		divisor--;
 		divisor = !divisor;
 	}
 
@@ -286,7 +291,7 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 	// Find most significant bit
 	int dividendMS = -1, divisorMS = -1;
 
-	for (int i = this->SizeOf() - 1; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--)
+	for (int i = this->SizeOf() - 2; i >= 0 && (dividendMS == -1 || divisorMS == -1); i--) // Skip sign bit
 	{
 		if (dividend.GetBit(i) && dividendMS == -1)
 			dividendMS = i;
@@ -294,30 +299,65 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 			divisorMS = i;
 	}
 
-	int i = 0;
 	divisor = divisor << (dividendMS - divisorMS);
 
-	while (dividend >= other) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
+	for (int i = 0; dividend >= other.Abs(); i++) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
 	{
 		if (dividend >= divisor) // If it's more than the divisor
 		{
 			dividend -= divisor; // Subtract shifted divisor from dividend
 		}
 
-		if (dividend < other) // If it's less than original divisor
+		if (dividend < other.Abs()) // If it's less than original divisor
 			break;
 
 		divisor = divisor >> 1; // Divide divisor by 2
-		i++;
 	}
 
-	// UNSURE HOW NEGATIVE MODULO WORKS
-	dividend.SetBit(this->SizeOf() - 1, (negativeDividend && !negativeDivisor) || (negativeDivisor && !negativeDividend)); // Set sign bit
+	// Modulo negative is only affected by dividend
+	if (negativeDividend)
+	{
+		dividend++;
+		dividend = !dividend;
+	}
 
 	return dividend;
 }
 
 void BinaryInt::operator%=(const BinaryInt& other) { *this = *this % other; }
+
+void BinaryInt::operator++()
+{
+	*this += BinaryInt("1");
+}
+
+void BinaryInt::operator++(int)
+{
+	++(*this);
+}
+
+void BinaryInt::operator--()
+{
+	*this -= BinaryInt("1");
+}
+
+void BinaryInt::operator--(int)
+{
+	--(*this);
+}
+
+BinaryInt BinaryInt::Abs() const
+{
+	if (this->GetBit(this->SizeOf() - 1)) // Is negative
+	{
+		BinaryInt output = *this;
+		output--;
+		output = !output;
+
+		return output;
+	}
+	return *this;
+}
 
 
 // Shift operators
@@ -370,7 +410,7 @@ std::string BinaryInt::ToBase(const BinaryInt& divisor) const
 	bool negative = this->GetBit(this->SizeOf() - 1);
 	if (negative) // Remove Two's complement
 	{
-		dividend -= BinaryInt("1");
+		dividend--;
 		dividend = !dividend;
 		finalDigits += '-'; // Add a sign to the final answer
 	}
