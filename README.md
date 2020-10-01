@@ -13,7 +13,7 @@ A C++ Visual Studio Project where I try to implement binary as a class, implemen
   * Input Equations
 
 # Planned Optimisations
- * Include <ostream> instead of <iostream> where I can.
+ * Include ostream instead of iostream where I can.
 
 # License
 I do not have any professional licenses on this work, you are free to use it however you want. I'd be glad to know where you are using it if you do.
