@@ -167,7 +167,7 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 	int i = 0;
 	divisor = divisor << (dividendMS - divisorMS);
 
-	while (dividend >= other) // More than original divisor
+	while (dividend >= other) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
 	{
 		if (dividend >= divisor) // If it's more than the divisor
 		{
@@ -177,6 +177,9 @@ BinaryInt BinaryInt::operator/(const BinaryInt& other) const
 		{
 			quotient.SetBit(0, 0); // Set quotient bit to 0
 		}
+
+		if (dividend < other) // If it's less than original divisor
+			break;
 
 		quotient = quotient << 1; // Multiply quotient by 2
 		divisor = divisor >> 1; // Divide divisor by 2
@@ -210,12 +213,15 @@ BinaryInt BinaryInt::operator%(const BinaryInt& other) const
 	int i = 0;
 	divisor = divisor << (dividendMS - divisorMS);
 
-	while (dividend >= other) // More than original divisor
+	while (dividend >= other) // More than original divisor (Still gets checked to eliminate a final unnecessary loop)
 	{
 		if (dividend >= divisor) // If it's more than the divisor
 		{
 			dividend -= divisor; // Subtract shifted divisor from dividend
 		}
+
+		if (dividend < other) // If it's less than original divisor
+			break;
 
 		divisor = divisor >> 1; // Divide divisor by 2
 		i++;
