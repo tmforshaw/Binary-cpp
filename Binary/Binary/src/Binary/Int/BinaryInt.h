@@ -1,6 +1,6 @@
 #pragma once
-#include "Constants.h"
-#include "Binary.h"
+#include "../../Other/Constants.h"
+#include "../Binary.h"
 #include <ostream>
 #include <vector>
 

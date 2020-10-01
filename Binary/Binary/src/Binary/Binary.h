@@ -1,5 +1,5 @@
 #pragma once
-#include "Constants.h"
+#include "../Other/Constants.h"
 #include <string>
 
 class Binary

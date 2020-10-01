@@ -72,13 +72,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\temp\</IntDir>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\bin\</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\bin\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\temp\</IntDir>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\bin\</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\bin\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -143,14 +143,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\BinaryInt.cpp" />
-    <ClCompile Include="src\Binary.cpp" />
+    <ClCompile Include="src\Binary\Float\BinaryFloat.cpp" />
+    <ClCompile Include="src\Binary\Int\BinaryInt.cpp" />
+    <ClCompile Include="src\Binary\Binary.cpp" />
+    <ClCompile Include="src\Other\Equation.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BinaryInt.h" />
-    <ClInclude Include="src\Binary.h" />
-    <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\Binary\Float\BinaryFloat.h" />
+    <ClInclude Include="src\Binary\Int\BinaryInt.h" />
+    <ClInclude Include="src\Binary\Binary.h" />
+    <ClInclude Include="src\Other\Constants.h" />
+    <ClInclude Include="src\Other\Equation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

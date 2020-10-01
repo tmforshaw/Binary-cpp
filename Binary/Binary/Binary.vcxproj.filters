@@ -18,21 +18,33 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Binary.cpp">
+    <ClCompile Include="src\Other\Equation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BinaryInt.cpp">
+    <ClCompile Include="src\Binary\Binary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Binary\Float\BinaryFloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Binary\Int\BinaryInt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Binary.h">
+    <ClInclude Include="src\Other\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Constants.h">
+    <ClInclude Include="src\Other\Equation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BinaryInt.h">
+    <ClInclude Include="src\Binary\Binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Binary\Float\BinaryFloat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Binary\Int\BinaryInt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
