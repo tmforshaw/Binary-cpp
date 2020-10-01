@@ -431,7 +431,11 @@ std::string BinaryInt::ToBase(const BinaryInt& divisor) const
 		for (int j = 0; j < this->SizeOf(); j++)
 			digitTotal += digits[i].GetBit(j) * pow(2, j);
 
-		charDigits.push_back((char)digitTotal + '0');
+		charDigits.push_back(
+			((char)digitTotal > 9) ?
+			(char)digitTotal + 'A' - 10 :
+			(char)digitTotal + '0'
+		);
 	}
 
 	for (int i = 0; i < charDigits.size(); i++)
