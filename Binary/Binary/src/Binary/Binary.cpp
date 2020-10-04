@@ -6,7 +6,7 @@ Binary::Binary()
 {
 	// Return a Binary of 0
 	for (int i = 0; i < this->SizeOf(); i++)
-		Binary::m_bits[i] = 0;
+		this->SetBit(i, 0);
 }
 
 Binary::Binary(std::string strBits)
@@ -21,9 +21,9 @@ Binary::Binary(std::string strBits)
 		// Set the n-th element of m_bits to the value of 1 or 0
 
 		if (strBits[i] - '0') // Everything above zero
-			Binary::m_bits[(int)strBits.length() - 1 - i] = 1;
+			this->SetBit((int)strBits.length() - 1 - i, 1);
 		else // Zero
-			Binary::m_bits[(int)strBits.length() - 1 - i] = 0;
+			this->SetBit((int)strBits.length() - 1 - i, 0);
 	}
 }
 
